@@ -1,40 +1,44 @@
-# @fastify/deepmerge
+# @victr/deepmerge
 
-![CI](https://github.com/fastify/deepmerge/workflows/CI/badge.svg)
-[![NPM version](https://img.shields.io/npm/v/@fastify/deepmerge.svg?style=flat)](https://www.npmjs.com/package/@fastify/deepmerge)
+![CI](https://github.com/victrme/deepmerge/workflows/CI/badge.svg)
+[![NPM version](https://img.shields.io/npm/v/@victr/deepmerge.svg?style=flat)](https://www.npmjs.com/package/@victr/deepmerge)
 [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat)](https://standardjs.com/)
 
+This is a ESM only version of [@fastify/deepmerge](https://github.com/fastly/deepmerge).
 Merges the enumerable properties of two or more objects deeply. Fastest implementation of deepmerge, see section 'Benchmarks'.
 
 ### Install
+
 ```
-npm i @fastify/deepmerge
+npm i @victr/deepmerge
 ```
 
 ### Usage
 
-The module exports a function, which provides a function to deepmerge Objects. 
+The module exports a function, which provides a function to deepmerge Objects.
 
 ```
-deepmerge(options)
+deepmerge(options)(...objects)
 ```
 
 `options` is optional and can contain following values
 
-- `symbols` (`boolean`, optional) - should also merge object-keys which are symbols, default is false
-- `all` (`boolean`, optional) - merges all parameters, default is false
-- `mergeArray` (`function`, optional) - provide a function, which returns a function to add custom array merging function
-- `cloneProtoObject` (`function`, optional) - provide a function, which must return a clone of the object with the prototype of the object
+-   `symbols` (`boolean`, optional) - should also merge object-keys which are symbols, default is false
+-   `all` (`boolean`, optional) - merges all parameters, default is false
+-   `mergeArray` (`function`, optional) - provide a function, which returns a function to add custom array merging function
+-   `cloneProtoObject` (`function`, optional) - provide a function, which must return a clone of the object with the prototype of the object
 
 ```js
-const deepmerge = require('@fastify/deepmerge')()
-const result = deepmerge({a: 'value'}, { b: 404 })
+import deepmerge from "@victr/deepmerge"
+
+const result = deepmerge()({ a: "value" }, { b: 404 })
 console.log(result) // {a: 'value',  b: 404 }
 ```
 
 ```js
-const deepmerge = require('@fastify/deepmerge')({ all: true })
-const result = deepmerge({a: 'value'}, { b: 404 }, { a: 404 })
+import deepmerge from "@victr/deepmerge"
+
+const result = deepmerge({ all: true })({ a: "value" }, { b: 404 }, { a: 404 })
 console.log(result) // {a: 404,  b: 404 }
 ```
 
@@ -43,10 +47,11 @@ console.log(result) // {a: 404,  b: 404 }
 The default mode to merge Arrays is to concat the source-Array to the target-Array.
 
 ```js
+import deepmerge from "@victr/deepmerge"
+
 const target = [1, 2, 3]
 const source = [4, 5, 6]
-const deepmerge = require('@fastify/deepmerge')()
-const result = deepmerge(target, source)
+const result = deepmerge()(target, source)
 console.log(result) // [1, 2, 3, 4, 5, 6]
 ```
 
@@ -61,12 +66,14 @@ deepmerge: DeepMergeFn;
 getKeys: (value: object) => string[];
 ```
 
-The `mergeAray`-Function needs to return the actual Array merging function, which accepts two parameters of type 
+The `mergeAray`-Function needs to return the actual Array merging function, which accepts two parameters of type
 Array, and returns a value.
 
 Example 1: Replace the target-Array with a clone of the source-Array.
 
 ```js
+import deepmerge from "@victr/deepmerge"
+
 function replaceByClonedSource(options) {
   const clone = options.clone
   return function (target, source) {
@@ -74,14 +81,15 @@ function replaceByClonedSource(options) {
   }
 }
 
-const deepmerge = require('@fastify/deepmerge')({ mergeArray: replaceByClonedSource })
-const result = deepmerge([1, 2, 3], [4, 5, 6])
+const result = deepmerge({ mergeArray: replaceByClonedSource })([1, 2, 3], [4, 5, 6])
 console.log(result) // [4, 5, 6]
 ```
 
 Example 2: Merge each element of the source-Array with the element at the same index-position of the target-Array.
 
 ```js
+import deepmerge from "@victr/deepmerge"
+
 function deepmergeArray(options) {
   const deepmerge = options.deepmerge
   const clone = options.clone
@@ -103,13 +111,13 @@ function deepmergeArray(options) {
 }
 
 // default behaviour
-const deepmergeConcatArray = require('@fastify/deepmerge')()
-const resultConcatArray = deepmergeConcatArray([{ a: [1, 2, 3 ]}], [{b: [4, 5, 6]}])
+const deepmergeConcatArray = deepmerge()
+const resultConcatArray = deepmergeConcatArray([{ a: [1, 2, 3] }], [{ b: [4, 5, 6] }])
 console.log(resultConcatArray) // [ { a: [ 1, 2, 3 ]}, { b: [ 4, 5, 6 ] } ]
 
 // modified behaviour
-const deepmergeDeepmergeArray = require('@fastify/deepmerge')({ mergeArray: deepmergeArray })
-const resultDeepmergedArray = deepmergeDeepmergeArray([{ a: [1, 2, 3 ]}], [{b: [4, 5, 6]}])
+const deepmergeDeepmergeArray = deepmerge({ mergeArray: deepmergeArray })
+const resultDeepmergedArray = deepmergeDeepmergeArray([{ a: [1, 2, 3] }], [{ b: [4, 5, 6] }])
 console.log(resultDeepmergedArray) // [ { a: [ 1, 2, 3 ], b: [ 4, 5, 6 ] } ]
 ```
 
@@ -119,12 +127,14 @@ Merging objects with prototypes, such as Streams or Buffers, are not supported b
 You can provide a custom function to let this module deal with the object that has a `prototype` _(JSON object excluded)_.
 
 ```js
-function cloneByReference (source) {
+import deepmerge from "@victr/deepmerge"
+
+function cloneByReference(source) {
   return source
 }
 
-const deepmergeByReference = require('@fastify/deepmerge')({
-  cloneProtoObject: cloneByReference
+const deepmergeByReference = deepmerge({
+  cloneProtoObject: cloneByReference,
 })
 
 const result = deepmergeByReference({}, { stream: process.stdout })
@@ -133,11 +143,12 @@ console.log(result) // { stream: <ref *1> WriteStream }
 
 ## Benchmarks
 
-The benchmarks are available in the benchmark-folder. 
+The benchmarks are available in the benchmark-folder.
 
 `npm run bench` - benchmark various use cases of deepmerge:
+
 ```
-@@fastify/deepmerge: merge regex with date x 1,256,523,040 ops/sec ±0.16% (92 runs sampled)
+@fastify/deepmerge: merge regex with date x 1,256,523,040 ops/sec ±0.16% (92 runs sampled)
 @fastify/deepmerge: merge object with a primitive x 1,256,082,915 ops/sec ±0.25% (97 runs sampled)
 @fastify/deepmerge: merge two arrays containing strings x 25,392,605 ops/sec ±0.22% (97 runs sampled)
 @fastify/deepmerge: two merge arrays containing objects x 1,655,426 ops/sec ±0.65% (96 runs sampled)
@@ -146,6 +157,7 @@ The benchmarks are available in the benchmark-folder.
 ```
 
 `npm run bench:compare` - comparison of @fastify/deepmerge with other popular deepmerge implementation:
+
 ```
 @fastify/deepmerge x 605,343 ops/sec ±0.87% (96 runs sampled)
 deepmerge x 20,312 ops/sec ±1.06% (92 runs sampled)

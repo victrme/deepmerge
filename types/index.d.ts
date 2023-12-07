@@ -1,80 +1,60 @@
-type DeepMergeFn = <T1, T2>(target: T1, source: T2) => DeepMerge<T1, T2>;
-type DeepMergeAllFn = <T extends Array<any>>(...targets: T) => DeepMergeAll<{}, T>;
+type DeepMergeFn = <T1, T2>(target: T1, source: T2) => DeepMerge<T1, T2>
+type DeepMergeAllFn = <T extends Array<any>>(...targets: T) => DeepMergeAll<{}, T>
 
-type Primitive =
-  | null
-  | undefined
-  | string
-  | number
-  | boolean
-  | symbol
-  | bigint;
+type Primitive = null | undefined | string | number | boolean | symbol | bigint
 
-type BuiltIns = Primitive | Date | RegExp;
+type BuiltIns = Primitive | Date | RegExp
 
-type MergeArrays<T, U> = T extends readonly any[]
-  ? U extends readonly any[]
-  ? [...T, ...U]
-  : never
-  : never
+type MergeArrays<T, U> = T extends readonly any[] ? (U extends readonly any[] ? [...T, ...U] : never) : never
 
-type DifferenceKeys<
-  T,
-  U,
-  T0 = Omit<T, keyof U> & Omit<U, keyof T>,
-  T1 = { [K in keyof T0]: T0[K] }
-  > = T1
+type DifferenceKeys<T, U, T0 = Omit<T, keyof U> & Omit<U, keyof T>, T1 = { [K in keyof T0]: T0[K] }> = T1
 
 type IntersectionKeys<T, U> = Omit<T | U, keyof DifferenceKeys<T, U>>
 
 type DeepMergeHelper<
-  T,
-  U,
-  T0 = DifferenceKeys<T, U>
-  & { [K in keyof IntersectionKeys<T, U>]: DeepMerge<T[K], U[K]> },
-  T1 = { [K in keyof T0]: T0[K] }
-  > = T1
+	T,
+	U,
+	T0 = DifferenceKeys<T, U> & { [K in keyof IntersectionKeys<T, U>]: DeepMerge<T[K], U[K]> },
+	T1 = { [K in keyof T0]: T0[K] }
+> = T1
 
-type DeepMerge<T, U> =
-  U extends BuiltIns
-  ? U
-  : [T, U] extends [readonly any[], readonly any[]]
-  ? MergeArrays<T, U>
-  : [T, U] extends [{ [key: string]: unknown }, { [key: string]: unknown }]
-  ? DeepMergeHelper<T, U>
-  : U
+type DeepMerge<T, U> = U extends BuiltIns
+	? U
+	: [T, U] extends [readonly any[], readonly any[]]
+	? MergeArrays<T, U>
+	: [T, U] extends [{ [key: string]: unknown }, { [key: string]: unknown }]
+	? DeepMergeHelper<T, U>
+	: U
 
-type First<T> = T extends [infer _I, ...infer _Rest] ? _I : never;
+type First<T> = T extends [infer _I, ...infer _Rest] ? _I : never
 type Rest<T> = T extends [infer _I, ...infer _Rest] ? _Rest : never
 
-type DeepMergeAll<R, T> = First<T> extends never
-  ? R
-  : DeepMergeAll<DeepMerge<R, First<T>>, Rest<T>>;
+type DeepMergeAll<R, T> = First<T> extends never ? R : DeepMergeAll<DeepMerge<R, First<T>>, Rest<T>>
 
 type MergeArrayFnOptions = {
-  clone: (value: any) => any;
-  isMergeableObject: (value: any) => boolean;
-  deepmerge: DeepMergeFn;
-  getKeys: (value: object) => string[];
+	clone: (value: any) => any
+	isMergeableObject: (value: any) => boolean
+	deepmerge: DeepMergeFn
+	getKeys: (value: object) => string[]
 }
 
 type MergeArrayFn = (options: MergeArrayFnOptions) => (target: any[], source: any[]) => any[]
 
 interface Options {
-  mergeArray?: MergeArrayFn;
-  symbols?: boolean;
-  all?: boolean;
+	mergeArray?: MergeArrayFn
+	symbols?: boolean
+	all?: boolean
 }
 
 type DeepmergeConstructor = typeof deepmerge
 
 declare namespace deepmerge {
-  export { Options }
-  export const deepmerge: DeepmergeConstructor
-  export { deepmerge as default }
+	export { Options }
+	export const deepmerge: DeepmergeConstructor
+	export { deepmerge as default }
 }
 
-declare function deepmerge(options: Options & { all: true }): DeepMergeAllFn;
-declare function deepmerge(options?: Options): DeepMergeFn;
+declare function deepmerge(options: Options & { all: true }): DeepMergeAllFn
+declare function deepmerge(options?: Options): DeepMergeFn
 
-export = deepmerge
+export default deepmerge

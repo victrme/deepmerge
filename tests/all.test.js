@@ -1,31 +1,31 @@
-'use strict'
-
 // based on https://github.com/TehShrike/deepmerge/tree/3c39fb376158fa3cfc75250cfc4414064a90f582/test
 // MIT License
 // Copyright (c) 2012 - 2022 James Halliday, Josh Duff, and other contributors of deepmerge
 
-const deepmerge = require('../index')({ all: true })
-const test = require('tape').test
+import deepmerge from '../index.js'
+import { test } from 'tape'
+
+const merge = deepmerge({ all: true })
 
 test('return an empty object if first argument is an array with no elements', function (t) {
-  t.same(deepmerge(), {})
+  t.same(merge(), {})
   t.end()
 })
 
 test('Work just fine if first argument is an array with least than two elements', function (t) {
-  const actual = deepmerge({ example: true })
+  const actual = merge({ example: true })
   const expected = { example: true }
   t.same(actual, expected)
   t.end()
 })
 
 test('execute correctly if options object were not passed', function (t) {
-  t.doesNotThrow(deepmerge.bind(null, { example: true }, { another: '123' }))
+  t.doesNotThrow(merge.bind(null, { example: true }, { another: '123' }))
   t.end()
 })
 
 test('execute correctly if options object were passed', function (t) {
-  t.doesNotThrow(deepmerge.bind(null, { example: true }, { another: '123' }))
+  t.doesNotThrow(merge.bind(null, { example: true }, { another: '123' }))
   t.end()
 })
 
@@ -35,7 +35,7 @@ test('invoke merge on every item in array should result with all props', functio
   const thirdObject = { third: 123 }
   const fourthObject = { fourth: 'some string' }
 
-  const mergedObject = deepmerge(firstObject, secondObject, thirdObject, fourthObject)
+  const mergedObject = merge(firstObject, secondObject, thirdObject, fourthObject)
 
   t.ok(mergedObject.first === true)
   t.ok(mergedObject.second === false)
@@ -49,7 +49,7 @@ test('invoke merge on every item in array with clone should clone all elements',
   const secondObject = { b: { e: true } }
   const thirdObject = { c: { f: 'string' } }
 
-  const mergedWithClone = deepmerge(firstObject, secondObject, thirdObject)
+  const mergedWithClone = merge(firstObject, secondObject, thirdObject)
 
   t.not(mergedWithClone.a, firstObject.a)
   t.not(mergedWithClone.b, secondObject.b)
@@ -63,7 +63,7 @@ test('invoke merge on every item in array without clone should clone all element
   const secondObject = { b: { e: true } }
   const thirdObject = { c: { f: 'string' } }
 
-  const mergedWithoutClone = deepmerge(firstObject, secondObject, thirdObject)
+  const mergedWithoutClone = merge(firstObject, secondObject, thirdObject)
 
   t.not(mergedWithoutClone.a, firstObject.a)
   t.not(mergedWithoutClone.b, secondObject.b)

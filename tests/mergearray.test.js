@@ -1,11 +1,9 @@
-'use strict'
-
 // based on https://github.com/TehShrike/deepmerge/tree/3c39fb376158fa3cfc75250cfc4414064a90f582/test
 // MIT License
 // Copyright (c) 2012 - 2022 James Halliday, Josh Duff, and other contributors of deepmerge
 
-const deepmerge = require('../index')
-const test = require('tape').test
+import deepmerge from '../index.js'
+import { test } from 'tape'
 
 test('all options are set', function (t) {
   t.plan(4)
