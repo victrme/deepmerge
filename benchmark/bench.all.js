@@ -1,9 +1,7 @@
 "use strict"
 
 import Benchmark from "benchmark"
-import deepmerge from "../index.js"
-
-const merge = deepmerge({ symbol: false, all: true })
+import { deepmergeAll } from "../index.js"
 
 const sourceSimple = { key1: "changed", key2: "value2" }
 const targetSimple = { key1: "value1", key3: "value3" }
@@ -43,11 +41,11 @@ const complexArrayTarget = [
 ]
 
 new Benchmark.Suite()
-	.add("merge regex with date", () => merge(regex, date))
-	.add("merge object with a primitive", () => merge(targetSimple, primitive))
-	.add("merge two arrays containing strings", () => merge(simpleArrayTarget, simpleArraySource))
-	.add("two merge arrays containing objects", () => merge(complexArrayTarget, complexArraySource))
-	.add("merge two flat objects", () => merge(targetSimple, sourceSimple))
-	.add("merge nested objects", () => merge(targetNested, sourceNested))
+	.add("merge regex with date", () => deepmergeAll(regex, date))
+	.add("merge object with a primitive", () => deepmergeAll(targetSimple, primitive))
+	.add("merge two arrays containing strings", () => deepmergeAll(simpleArrayTarget, simpleArraySource))
+	.add("two merge arrays containing objects", () => deepmergeAll(complexArrayTarget, complexArraySource))
+	.add("merge two flat objects", () => deepmergeAll(targetSimple, sourceSimple))
+	.add("merge nested objects", () => deepmergeAll(targetNested, sourceNested))
 	.on("cycle", (event) => console.log(String(event.target)))
 	.run()

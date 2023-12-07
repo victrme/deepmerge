@@ -57,4 +57,6 @@ declare namespace deepmerge {
 declare function deepmerge(options: Options & { all: true }): DeepMergeAllFn
 declare function deepmerge(options?: Options): DeepMergeFn
 
+export declare function deepmergeAll<T extends Array<any>>(...targets: T): DeepMergeAll<{}, T>
+
 export default deepmerge

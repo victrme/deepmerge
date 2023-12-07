@@ -4,7 +4,7 @@
 
 const JSON_PROTO = Object.getPrototypeOf({})
 
-export default function deepmerge(options) {
+function deepmerge(options) {
 	function isNotPrototypeKey(value) {
 		return value !== "constructor" && value !== "prototype" && value !== "__proto__"
 	}
@@ -149,3 +149,7 @@ export default function deepmerge(options) {
 
 	return options && options.all ? _deepmergeAll : _deepmerge
 }
+
+export default deepmerge
+
+export const deepmergeAll = deepmerge({ all: true })

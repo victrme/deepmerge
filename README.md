@@ -1,10 +1,8 @@
 # @victr/deepmerge
 
-![CI](https://github.com/victrme/deepmerge/workflows/CI/badge.svg)
 [![NPM version](https://img.shields.io/npm/v/@victr/deepmerge.svg?style=flat)](https://www.npmjs.com/package/@victr/deepmerge)
-[![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat)](https://standardjs.com/)
 
-This is a ESM only version of [@fastify/deepmerge](https://github.com/fastly/deepmerge).
+This is a ESM only version of [@fastify/deepmerge](https://github.com/fastify/deepmerge).
 Merges the enumerable properties of two or more objects deeply. Fastest implementation of deepmerge, see section 'Benchmarks'.
 
 ### Install
@@ -42,6 +40,15 @@ const result = deepmerge({ all: true })({ a: "value" }, { b: 404 }, { a: 404 })
 console.log(result) // {a: 404,  b: 404 }
 ```
 
+or without curry
+
+```js
+import { deepmergeAll } from "@victr/deepmerge"
+
+const result = deepmergeAll({ a: "value" }, { b: 404 }, { a: 404 })
+console.log(result) // {a: 404,  b: 404 }
+```
+
 #### mergeArray
 
 The default mode to merge Arrays is to concat the source-Array to the target-Array.
@@ -75,10 +82,10 @@ Example 1: Replace the target-Array with a clone of the source-Array.
 import deepmerge from "@victr/deepmerge"
 
 function replaceByClonedSource(options) {
-  const clone = options.clone
-  return function (target, source) {
-    return clone(source)
-  }
+	const clone = options.clone
+	return function (target, source) {
+		return clone(source)
+	}
 }
 
 const result = deepmerge({ mergeArray: replaceByClonedSource })([1, 2, 3], [4, 5, 6])
@@ -91,23 +98,23 @@ Example 2: Merge each element of the source-Array with the element at the same i
 import deepmerge from "@victr/deepmerge"
 
 function deepmergeArray(options) {
-  const deepmerge = options.deepmerge
-  const clone = options.clone
-  return function (target, source) {
-    let i = 0
-    const tl = target.length
-    const sl = source.length
-    const il = Math.max(target.length, source.length)
-    const result = new Array(il)
-    for (i = 0; i < il; ++i) {
-      if (i < sl) {
-        result[i] = deepmerge(target[i], source[i])
-      } else {
-        result[i] = clone(target[i])
-      }
-    }
-    return result
-  }
+	const deepmerge = options.deepmerge
+	const clone = options.clone
+	return function (target, source) {
+		let i = 0
+		const tl = target.length
+		const sl = source.length
+		const il = Math.max(target.length, source.length)
+		const result = new Array(il)
+		for (i = 0; i < il; ++i) {
+			if (i < sl) {
+				result[i] = deepmerge(target[i], source[i])
+			} else {
+				result[i] = clone(target[i])
+			}
+		}
+		return result
+	}
 }
 
 // default behaviour
@@ -130,11 +137,11 @@ You can provide a custom function to let this module deal with the object that h
 import deepmerge from "@victr/deepmerge"
 
 function cloneByReference(source) {
-  return source
+	return source
 }
 
 const deepmergeByReference = deepmerge({
-  cloneProtoObject: cloneByReference,
+	cloneProtoObject: cloneByReference,
 })
 
 const result = deepmergeByReference({}, { stream: process.stdout })
