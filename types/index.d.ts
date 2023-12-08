@@ -46,17 +46,19 @@ interface Options {
 	all?: boolean
 }
 
-type DeepmergeConstructor = typeof deepmerge
+type DeepmergeConstructor = typeof fastifyDeepMerge
 
-declare namespace deepmerge {
+declare namespace fastifyDeepMerge {
 	export { Options }
-	export const deepmerge: DeepmergeConstructor
-	export { deepmerge as default }
+	export const fastifyDeepMerge: DeepmergeConstructor
+	export { fastifyDeepMerge as default }
 }
 
-declare function deepmerge(options: Options & { all: true }): DeepMergeAllFn
-declare function deepmerge(options?: Options): DeepMergeFn
+declare function fastifyDeepMerge(options: Options & { all: true }): DeepMergeAllFn
+declare function fastifyDeepMerge(options?: Options): DeepMergeFn
 
 export declare function deepmergeAll<T extends Array<any>>(...targets: T): DeepMergeAll<{}, T>
 
-export default deepmerge
+export declare function deepmerge<T, S>(target: T, source: S): DeepMerge<T, S>
+
+export default fastifyDeepMerge

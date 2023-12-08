@@ -1,92 +1,67 @@
 import Benchmark from "benchmark"
 import deepmerge from "deepmerge"
 import mergedeep from "merge-deep"
+import lodashMerge from "lodash.merge"
 import tsdeepmerge from "ts-deepmerge"
 import * as deepmergets from "deepmerge-ts"
-import lodashMerge from "lodash.merge"
-import thisDeepMerge from "../index.js"
+import * as fastify from "../index.js"
 
-const fastifyDeepmerge = thisDeepMerge({ symbol: false })
 const deepmergeTs = deepmergets.deepmerge
 const tsDeepmerge = tsdeepmerge.default
-
-const sourceSimple = { key1: "changed", key2: "value2" }
-const targetSimple = { key1: "value1", key3: "value3" }
-
-const sourceNested = {
-	key1: {
-		subkey1: "subvalue1",
-		subkey2: "subvalue2",
-	},
-}
-const targetNested = {
-	key1: "value1",
-	key2: "value2",
-}
 
 const primitive = "primitive"
 
 const date = new Date()
 const regex = /a/g
 
-const simpleArrayTarget = ["a1", "a2", "c1", "f1", "p1"]
-const simpleArraySource = ["t1", "s1", "c2", "r1", "p2", "p3"]
+const simpleS = { key1: "changed", key2: "value2" }
+const simpleT = { key1: "value1", key3: "value3" }
 
-const complexArraySource = [
-	{ ...sourceSimple },
-	{ ...sourceSimple },
-	{ ...sourceSimple },
-	{ ...sourceSimple },
-	{ ...sourceSimple },
-]
-const complexArrayTarget = [
-	{ ...targetSimple },
-	{ ...targetSimple },
-	{ ...targetSimple },
-	{ ...targetSimple },
-	{ ...targetSimple },
-]
+const nestedS = { key1: { subkey1: "subvalue1", subkey2: "subvalue2" } }
+const nestedT = { key1: "value1", key2: "value2" }
+
+const simpleArrT = ["a1", "a2", "c1", "f1", "p1"]
+const simpleArrS = ["t1", "s1", "c2", "r1", "p2", "p3"]
+
+const complexArrS = [{ ...simpleS }, { ...simpleS }, { ...simpleS }, { ...simpleS }, { ...simpleS }]
+const complexArrT = [{ ...simpleT }, { ...simpleT }, { ...simpleT }, { ...simpleT }, { ...simpleT }]
 
 new Benchmark.Suite()
-	.add("@fastify/deepmerge: merge regex with date", () => fastifyDeepmerge(regex, date))
-	.add("@fastify/deepmerge: merge object with a primitive", () => fastifyDeepmerge(targetSimple, primitive))
-	.add("@fastify/deepmerge: merge two arrays containing strings", () =>
-		fastifyDeepmerge(simpleArrayTarget, simpleArraySource)
-	)
-	.add("@fastify/deepmerge: two merge arrays containing objects", () =>
-		fastifyDeepmerge(complexArrayTarget, complexArraySource)
-	)
-	.add("@fastify/deepmerge: merge two flat objects", () => fastifyDeepmerge(targetSimple, sourceSimple))
-	.add("@fastify/deepmerge: merge nested objects", () => fastifyDeepmerge(targetNested, sourceNested))
+	.add("@fastify/deepmerge: merge regex with date", () => fastify.deepmerge(regex, date))
+	.add("@fastify/deepmerge: merge object with a primitive", () => fastify.deepmerge(simpleT, primitive))
+	.add("@fastify/deepmerge: merge two arrays containing strings", () => fastify.deepmerge(simpleArrT, simpleArrS))
+	.add("@fastify/deepmerge: two merge arrays containing objects", () => fastify.deepmerge(complexArrT, complexArrS))
+	.add("@fastify/deepmerge: merge two flat objects", () => fastify.deepmerge(simpleT, simpleS))
+	.add("@fastify/deepmerge: merge nested objects", () => fastify.deepmerge(nestedT, nestedS))
 	.add("deepmerge: merge regex with date", () => deepmerge(regex, date))
-	.add("deepmerge: merge object with a primitive", () => deepmerge(targetSimple, primitive))
-	.add("deepmerge: merge two arrays containing strings", () => deepmerge(simpleArrayTarget, simpleArraySource))
-	.add("deepmerge: two merge arrays containing objects", () => deepmerge(complexArrayTarget, complexArraySource))
-	.add("deepmerge: merge two flat objects", () => deepmerge(targetSimple, sourceSimple))
-	.add("deepmerge: merge nested objects", () => deepmerge(targetNested, sourceNested))
+	.add("deepmerge: merge object with a primitive", () => deepmerge(simpleT, primitive))
+	.add("deepmerge: merge two arrays containing strings", () => deepmerge(simpleArrT, simpleArrS))
+	.add("deepmerge: two merge arrays containing objects", () => deepmerge(complexArrT, complexArrS))
+	.add("deepmerge: merge two flat objects", () => deepmerge(simpleT, simpleS))
+	.add("deepmerge: merge nested objects", () => deepmerge(nestedT, nestedS))
 	.add("merge-deep: merge regex with date", () => mergedeep(regex, date))
-	.add("merge-deep: merge object with a primitive", () => mergedeep(targetSimple, primitive))
-	.add("merge-deep: merge two arrays containing strings", () => mergedeep(simpleArrayTarget, simpleArraySource))
-	.add("merge-deep: two merge arrays containing objects", () => mergedeep(complexArrayTarget, complexArraySource))
-	.add("merge-deep: merge two flat objects", () => mergedeep(targetSimple, sourceSimple))
-	.add("merge-deep: merge nested objects", () => mergedeep(targetNested, sourceNested))
+	.add("merge-deep: merge object with a primitive", () => mergedeep(simpleT, primitive))
+	.add("merge-deep: merge two arrays containing strings", () => mergedeep(simpleArrT, simpleArrS))
+	.add("merge-deep: two merge arrays containing objects", () => mergedeep(complexArrT, complexArrS))
+	.add("merge-deep: merge two flat objects", () => mergedeep(simpleT, simpleS))
+	.add("merge-deep: merge nested objects", () => mergedeep(nestedT, nestedS))
 	.add("ts-deepmerge: merge regex with date", () => tsDeepmerge(regex, date))
-	.add("ts-deepmerge: merge object with a primitive", () => tsDeepmerge(targetSimple, primitive))
-	.add("ts-deepmerge: merge two arrays containing strings", () => tsDeepmerge(simpleArrayTarget, simpleArraySource))
-	.add("ts-deepmerge: two merge arrays containing objects", () => tsDeepmerge(complexArrayTarget, complexArraySource))
-	.add("ts-deepmerge: merge two flat objects", () => tsDeepmerge(targetSimple, sourceSimple))
-	.add("ts-deepmerge: merge nested objects", () => tsDeepmerge(targetNested, sourceNested))
+	.add("ts-deepmerge: merge object with a primitive", () => tsDeepmerge(simpleT, primitive))
+	.add("ts-deepmerge: merge two arrays containing strings", () => tsDeepmerge(simpleArrT, simpleArrS))
+	.add("ts-deepmerge: two merge arrays containing objects", () => tsDeepmerge(complexArrT, complexArrS))
+	.add("ts-deepmerge: merge two flat objects", () => tsDeepmerge(simpleT, simpleS))
+	.add("ts-deepmerge: merge nested objects", () => tsDeepmerge(nestedT, nestedS))
 	.add("deepmerge-ts: merge regex with date", () => deepmergeTs(regex, date))
-	.add("deepmerge-ts: merge object with a primitive", () => deepmergeTs(targetSimple, primitive))
-	.add("deepmerge-ts: merge two arrays containing strings", () => deepmergeTs(simpleArrayTarget, simpleArraySource))
-	.add("deepmerge-ts: two merge arrays containing objects", () => deepmergeTs(complexArrayTarget, complexArraySource))
-	.add("deepmerge-ts: merge two flat objects", () => deepmergeTs(targetSimple, sourceSimple))
-	.add("deepmerge-ts: merge nested objects", () => deepmergeTs(targetNested, sourceNested))
+	.add("deepmerge-ts: merge object with a primitive", () => deepmergeTs(simpleT, primitive))
+	.add("deepmerge-ts: merge two arrays containing strings", () => deepmergeTs(simpleArrT, simpleArrS))
+	.add("deepmerge-ts: two merge arrays containing objects", () => deepmergeTs(complexArrT, complexArrS))
+	.add("deepmerge-ts: merge two flat objects", () => deepmergeTs(simpleT, simpleS))
+	.add("deepmerge-ts: merge nested objects", () => deepmergeTs(nestedT, nestedS))
 	.add("lodash.merge: merge regex with date", () => lodashMerge(regex, date))
-	.add("lodash.merge: merge object with a primitive", () => lodashMerge(targetSimple, primitive))
-	.add("lodash.merge: merge two arrays containing strings", () => lodashMerge(simpleArrayTarget, simpleArraySource))
-	.add("lodash.merge: two merge arrays containing objects", () => lodashMerge(complexArrayTarget, complexArraySource))
-	.add("lodash.merge: merge two flat objects", () => lodashMerge(targetSimple, sourceSimple))
-	.add("lodash.merge: merge nested objects", () => lodashMerge(targetNested, sourceNested))
+	.add("lodash.merge: merge object with a primitive", () => lodashMerge(simpleT, primitive))
+	.add("lodash.merge: merge two arrays containing strings", () => lodashMerge(simpleArrT, simpleArrS))
+	.add("lodash.merge: two merge arrays containing objects", () => lodashMerge(complexArrT, complexArrS))
+	.add("lodash.merge: merge two flat objects", () => lodashMerge(simpleT, simpleS))
+	.add("lodash.merge: merge nested objects", () => lodashMerge(nestedT, nestedS))
 	.on("cycle", (event) => console.log(String(event.target)))
 	.run()

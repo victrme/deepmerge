@@ -1,12 +1,11 @@
 import Benchmark from "benchmark"
 import deepmerge from "deepmerge"
 import mergedeep from "merge-deep"
+import lodashMerge from "lodash.merge"
 import tsdeepmerge from "ts-deepmerge"
 import * as deepmergets from "deepmerge-ts"
-import lodashMerge from "lodash.merge"
-import thisDeepMerge from "../index.js"
+import * as fastify from "../index.js"
 
-const fastifyDeepmerge = thisDeepMerge({ symbol: false })
 const deepmergeTs = deepmergets.deepmerge
 const tsDeepmerge = tsdeepmerge.default
 
@@ -49,13 +48,13 @@ const complexArrayTarget = [
 
 new Benchmark.Suite()
 	.add("@fastify/deepmerge", function () {
-		fastifyDeepmerge(regex, date)
-		fastifyDeepmerge(targetSimple, primitive)
-		fastifyDeepmerge(simpleArrayTarget, simpleArraySource)
-		fastifyDeepmerge(complexArrayTarget, complexArraySource)
-		fastifyDeepmerge(complexArrayTarget, complexArraySource)
-		fastifyDeepmerge(targetSimple, sourceSimple)
-		fastifyDeepmerge(targetNested, sourceNested)
+		fastify.deepmerge(regex, date)
+		fastify.deepmerge(targetSimple, primitive)
+		fastify.deepmerge(simpleArrayTarget, simpleArraySource)
+		fastify.deepmerge(complexArrayTarget, complexArraySource)
+		fastify.deepmerge(complexArrayTarget, complexArraySource)
+		fastify.deepmerge(targetSimple, sourceSimple)
+		fastify.deepmerge(targetNested, sourceNested)
 	})
 	.add("deepmerge", function () {
 		deepmerge(regex, date)

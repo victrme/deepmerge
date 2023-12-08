@@ -2,7 +2,7 @@
 
 [![NPM version](https://img.shields.io/npm/v/@victr/deepmerge.svg?style=flat)](https://www.npmjs.com/package/@victr/deepmerge)
 
-This is a ESM only version of [@fastify/deepmerge](https://github.com/fastify/deepmerge).
+This is an ESM only version of [@fastify/deepmerge](https://github.com/fastify/deepmerge).  
 Merges the enumerable properties of two or more objects deeply. Fastest implementation of deepmerge, see section 'Benchmarks'.
 
 ### Install
@@ -13,10 +13,12 @@ npm i @victr/deepmerge
 
 ### Usage
 
-The module exports a function, which provides a function to deepmerge Objects.
+The module exports a default function, which provides a function to deepmerge Objects. Also a deepmerge, and a deepmergeAll shorthand.
 
 ```
 deepmerge(options)(...objects)
+deepmerge(object1, object2)
+deepmergeAll(...objects)
 ```
 
 `options` is optional and can contain following values
@@ -29,24 +31,23 @@ deepmerge(options)(...objects)
 ```js
 import deepmerge from "@victr/deepmerge"
 
-const result = deepmerge()({ a: "value" }, { b: 404 })
-console.log(result) // {a: 'value',  b: 404 }
+const result1 = deepmerge()({ a: "value" }, { b: 404 })
+const result2 = deepmerge({ all: true })({ a: "value" }, { b: 404 }, { a: 404 })
+
+console.log(result1) // {a: 'value',  b: 404 }
+console.log(result2) // {a: 404,  b: 404 }
 ```
 
-```js
-import deepmerge from "@victr/deepmerge"
-
-const result = deepmerge({ all: true })({ a: "value" }, { b: 404 }, { a: 404 })
-console.log(result) // {a: 404,  b: 404 }
-```
-
-or without curry
+or without curry  
 
 ```js
-import { deepmergeAll } from "@victr/deepmerge"
+import { deepmergeAll, deepmerge } from "@victr/deepmerge"
 
-const result = deepmergeAll({ a: "value" }, { b: 404 }, { a: 404 })
-console.log(result) // {a: 404,  b: 404 }
+const result1 = deepmerge({ a: "value" }, { b: 404 })
+const result2 = deepmergeAll({ a: "value" }, { b: 404 }, { a: 404 })
+
+console.log(result1) // {a: 'value',  b: 404 }
+console.log(result2) // {a: 404,  b: 404 }
 ```
 
 #### mergeArray

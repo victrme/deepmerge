@@ -1,5 +1,5 @@
 import Benchmark from "benchmark"
-import fastifyDeepmerge from "../index.js"
+import { deepmerge } from "../index.js"
 
 const sourceSimple = { key1: "changed", key2: "value2" }
 const targetSimple = { key1: "value1", key3: "value3" }
@@ -38,14 +38,12 @@ const complexArrayTarget = [
 	{ ...targetSimple },
 ]
 
-const merge = fastifyDeepmerge({ symbol: false })
-
 new Benchmark.Suite()
-	.add("merge regex with date", () => merge(regex, date))
-	.add("merge object with a primitive", () => merge(targetSimple, primitive))
-	.add("merge two arrays containing strings", () => merge(simpleArrayTarget, simpleArraySource))
-	.add("two merge arrays containing objects", () => merge(complexArrayTarget, complexArraySource))
-	.add("merge two flat objects", () => merge(targetSimple, sourceSimple))
-	.add("merge nested objects", () => merge(targetNested, sourceNested))
+	.add("merge regex with date", () => deepmerge(regex, date))
+	.add("merge object with a primitive", () => deepmerge(targetSimple, primitive))
+	.add("merge two arrays containing strings", () => deepmerge(simpleArrayTarget, simpleArraySource))
+	.add("two merge arrays containing objects", () => deepmerge(complexArrayTarget, complexArraySource))
+	.add("merge two flat objects", () => deepmerge(targetSimple, sourceSimple))
+	.add("merge nested objects", () => deepmerge(targetNested, sourceNested))
 	.on("cycle", (event) => console.log(String(event.target)))
 	.run()
