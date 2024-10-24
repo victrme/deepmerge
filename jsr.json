@@ -1,0 +1,11 @@
+{
+    "name": "@victr/deepmerge",
+    "version": "0.0.0",
+    "exports": "./index.js",
+    "include": [
+        "LICENSE",
+        "README.md",
+        "index.js",
+        "index.d.ts"
+    ]
+}

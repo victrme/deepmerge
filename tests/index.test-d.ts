@@ -1,5 +1,5 @@
 import { expectAssignable, expectError, expectType } from "tsd"
-import deepmerge from "./index.js"
+import deepmerge from "../index.js"
 
 expectType<string>(deepmerge()({ a: "a" }, { b: "b" }).a)
 expectType<string>(deepmerge()({ a: "a" }, { b: "b" }).b)

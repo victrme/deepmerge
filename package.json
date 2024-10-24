@@ -34,7 +34,7 @@
 		"LICENSE",
 		"README.md",
 		"index.js",
-		"types/index.d.ts"
+		"index.d.ts"
 	],
 	"keywords": [
 		"merge",
